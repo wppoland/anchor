@@ -1,49 +1,30 @@
-# Anchor — Sticky Add to Cart Bar for WooCommerce
+# Anchor
 
-A sticky add-to-cart bar that appears on scroll, boosting conversions on long
-WooCommerce product pages. FREE, wp.org-ready, and fully self-contained (no
-shared kit dependency).
+Anchor adds a slim, sticky add-to-cart bar to your WooCommerce single product pages. It stays hidden until the shopper scrolls past the main add-to-cart form, then slides into view with the product thumbnail, title, price, an optional quantity field and a buy button — keeping the purchase one tap away on long pages.
 
-## What it does
+## Features
 
-On single product pages Anchor prints a slim bar that stays hidden until the
-shopper scrolls past the main add-to-cart form, then slides into view with the
-product thumbnail, title, price, an optional quantity field and a buy button.
-It is **variation-aware**: on variable products it mirrors WooCommerce's native
-variations form (price, availability, resolved variation id) without adding any
-jQuery of its own. The bar is fixed to the viewport and starts hidden, so it
-causes **zero Cumulative Layout Shift**.
+- Sticky add-to-cart bar revealed on scroll, positioned at the top or bottom of the screen.
+- Show or hide on desktop and mobile independently, with a configurable scroll threshold.
+- Optionally show the product thumbnail, price and quantity field.
+- Variation-aware: on variable products the bar mirrors WooCommerce's native variations form, keeping price, availability and the buy button in sync. No jQuery of its own.
+- Fixed to the viewport and starts hidden, so it causes zero Cumulative Layout Shift.
+- Accessible region with keyboard support, visible focus and screen-reader text; respects reduced-motion and dark mode.
 
-## Settings (WooCommerce → Anchor)
+## Installation
 
-- Master enable toggle.
-- Position: top or bottom of the screen.
-- Show on desktop / show on mobile (independent).
-- Scroll threshold (px past the main button before reveal).
-- Show or hide the thumbnail, price and quantity field.
+1. Upload the plugin to `/wp-content/plugins/anchor`, or install it from Plugins → Add New.
+2. Activate it. WooCommerce must be active.
+3. Go to WooCommerce → Anchor to choose the position, devices, scroll threshold and which elements appear.
 
-## Architecture
+## Frequently Asked Questions
 
-- **Bootstrap** (`anchor.php`): PHP/WC guards, HPOS + cart-blocks compat, boot on
-  `init` priority 0, `do_action('anchor/booted', Plugin::instance())` fired from
-  `Plugin::boot()` (the hook the PRO companion extends).
-- **Autoload** (`autoload.php`): Composer vendor autoloader + a minimal PSR-4
-  fallback. No external runtime packages.
-- **DI**: `src/Plugin.php` singleton + `src/Container.php`; services in
-  `config/services.php`, boot order in `config/hooks.php`, defaults in
-  `config/defaults.php`; `src/Migrator.php` seeds defaults.
-- **Front end**: `src/Service/StickyBar.php` renders `templates/sticky-bar.php`
-  and enqueues `assets/{css,js}/anchor.*` only on product pages.
-- **Admin**: `src/Admin/Settings.php` (Settings API, manage_woocommerce).
+**Does it work with variable products?**
+Yes. The bar mirrors WooCommerce's native variations form, so its price, availability and buy button update as the shopper picks options.
 
-## Quality gates
+**Will it slow my product pages down or shift the layout?**
+No. Assets load only on single product pages, and the bar is fixed and hidden until needed, so it never causes layout shift.
 
-```bash
-composer install
-composer cs        # PHPCS (WordPress security ruleset)
-composer analyse   # PHPStan level 6 + WooCommerce stubs
-```
+Built by WPPoland — https://plogins.com
 
-CI (`.github/workflows/ci.yml`) calls the shared `wppoland/workflows@v1` reusable
-workflow and runs the official WordPress Plugin Check as the wp.org submission
-gate.
+License: GPL-2.0-or-later
