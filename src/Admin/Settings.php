@@ -150,6 +150,19 @@ final class Settings implements HasHooks
                     </table>
                 </div>
 
+                <?php
+                /**
+                 * Fires inside the Anchor settings form, after the core cards and
+                 * before the submit button. Add-ons render their own settings
+                 * cards here; their fields share the `anchor_settings` option and
+                 * are preserved on save via the `anchor_sanitize_settings` filter.
+                 *
+                 * @param array<string, mixed> $settings Resolved settings (defaults merged with stored).
+                 * @param string               $option   The shared option name.
+                 */
+                do_action('anchor_admin_settings_after_cards', $settings, self::OPTION);
+                ?>
+
                 <?php submit_button(); ?>
             </form>
         </div>
@@ -171,10 +184,25 @@ final class Settings implements HasHooks
         $threshold = isset($raw['scroll_threshold']) ? absint($raw['scroll_threshold']) : 300;
         $threshold = max(self::MIN_THRESHOLD, min(self::MAX_THRESHOLD, $threshold));
 
-        return [
+        $sanitized = [
             'enabled'          => ! empty($raw['enabled']),
             'scroll_threshold' => $threshold,
         ];
+
+        /**
+         * Filters the sanitised Anchor settings before they are saved.
+         *
+         * Add-ons that render fields into the shared `anchor_settings` option use
+         * this to validate and re-attach their own keys, which the core
+         * sanitiser otherwise drops.
+         *
+         * @param array<string, mixed> $sanitized The core plugin's clean settings.
+         * @param array<string, mixed> $raw       The raw submitted values.
+         * @return array<string, mixed>
+         */
+        $filtered = apply_filters('anchor_sanitize_settings', $sanitized, $raw);
+
+        return is_array($filtered) ? $filtered : $sanitized;
     }
 
     /**
