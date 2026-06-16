@@ -49,5 +49,15 @@ final class Plugin
                 $service->registerHooks();
             }
         }
+
+        /**
+         * Fires after Anchor has fully booted and registered its services.
+         *
+         * Add-ons (e.g. Anchor Pro) hook this to extend the shared DI container
+         * and register their own services.
+         *
+         * @param Plugin $plugin The booted plugin instance.
+         */
+        do_action('anchor/booted', $this);
     }
 }
